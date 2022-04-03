@@ -7,7 +7,9 @@ export default function bindRoutes(app) {
   const GamesController = initGamesController(db);
   const UsersController = initUsersController(db);
   // main page
-  app.get('/', UsersController.root);
+  app.get('/', (request, response) => {
+    response.sendFile(resolve('dist', 'main.html'));
+  });
   app.post('/login', UsersController.login);
   app.get('/start', GamesController.create);
   app.put('/deal/:id', GamesController.deal);

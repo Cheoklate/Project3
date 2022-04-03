@@ -26,7 +26,7 @@ export default function initUsersController(db) {
         res.send({ user });
       } else {
         console.log('not logged in ');
-      }
+      } 
     }
     catch (error) {
       console.log(error);
