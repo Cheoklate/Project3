@@ -1,7 +1,7 @@
 import axios from 'axios';
 import './styles.scss';
 
-/*
+
 // DOM Elements
 const allCells = document.querySelectorAll('.cell:not(.row-top)');
 const topCells = document.querySelectorAll('.cell.row-top');
@@ -288,7 +288,7 @@ resetButton.addEventListener('click', () => {
   statusSpan.textContent = '';
 });
 
-*/
+
 
 const topContainerDiv = document.createElement('div');
 topContainerDiv.classList.add('top-container');
