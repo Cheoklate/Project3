@@ -1,5 +1,5 @@
+import { resolve } from 'path';
 import db from './models/index.mjs';
-
 import initGamesController from './controllers/games.mjs';
 import initUsersController from './controllers/users.mjs';
 
