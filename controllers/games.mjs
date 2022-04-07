@@ -1,23 +1,97 @@
+const emptyBoard = {
+	board: [
+		{ row: 0, col: 0, type: 'all', colour: null },
+		{ row: 0, col: 1, type: 'all', colour: null },
+		{ row: 0, col: 2, type: 'all', colour: null },
+		{ row: 0, col: 3, type: 'all', colour: null },
+		{ row: 0, col: 4, type: 'all', colour: null },
+		{ row: 0, col: 5, type: 'all', colour: null },
+		{ row: 0, col: 6, type: 'all', colour: null },
+		{ row: 1, col: 0, type: 'all', colour: null },
+		{ row: 1, col: 1, type: 'all', colour: null },
+		{ row: 1, col: 2, type: 'all', colour: null },
+		{ row: 1, col: 3, type: 'all', colour: null },
+		{ row: 1, col: 4, type: 'all', colour: null },
+		{ row: 1, col: 5, type: 'all', colour: null },
+		{ row: 1, col: 6, type: 'all', colour: null },
+		{ row: 2, col: 0, type: 'all', colour: null },
+		{ row: 2, col: 1, type: 'all', colour: null },
+		{ row: 2, col: 2, type: 'all', colour: null },
+		{ row: 2, col: 3, type: 'all', colour: null },
+		{ row: 2, col: 4, type: 'all', colour: null },
+		{ row: 2, col: 5, type: 'all', colour: null },
+		{ row: 2, col: 6, type: 'all', colour: null },
+		{ row: 3, col: 0, type: 'all', colour: null },
+		{ row: 3, col: 1, type: 'all', colour: null },
+		{ row: 3, col: 2, type: 'all', colour: null },
+		{ row: 3, col: 3, type: 'all', colour: null },
+		{ row: 3, col: 4, type: 'all', colour: null },
+		{ row: 3, col: 5, type: 'all', colour: null },
+		{ row: 3, col: 6, type: 'all', colour: null },
+		{ row: 4, col: 0, type: 'all', colour: null },
+		{ row: 4, col: 1, type: 'all', colour: null },
+		{ row: 4, col: 2, type: 'all', colour: null },
+		{ row: 4, col: 3, type: 'all', colour: null },
+		{ row: 4, col: 4, type: 'all', colour: null },
+		{ row: 4, col: 5, type: 'all', colour: null },
+		{ row: 4, col: 6, type: 'all', colour: null },
+		{ row: 5, col: 0, type: 'all', colour: null },
+		{ row: 5, col: 1, type: 'all', colour: null },
+		{ row: 5, col: 2, type: 'all', colour: null },
+		{ row: 5, col: 3, type: 'all', colour: null },
+		{ row: 5, col: 4, type: 'all', colour: null },
+		{ row: 5, col: 5, type: 'all', colour: null },
+		{ row: 5, col: 6, type: 'all', colour: null },
+		{ row: null, col: 0, type: 'top', colour: null },
+		{ row: null, col: 1, type: 'top', colour: null },
+		{ row: null, col: 2, type: 'top', colour: null },
+		{ row: null, col: 3, type: 'top', colour: null },
+		{ row: null, col: 4, type: 'top', colour: null },
+		{ row: null, col: 5, type: 'top', colour: null },
+		{ row: null, col: 6, type: 'top', colour: null },
+	],
+};
+
+const saveJSON = () => {
+	var data = {
+		board: [],
+	};
+
+	for (let i = 0; i < allCells.length; i++) {
+		const [rowIndex, colIndex] = getCellLocation(allCells[i]);
+		const colour = getColorOfCell(allCells[i]);
+
+		var cellEntry = {
+			row: rowIndex,
+			col: colIndex,
+			type: 'all',
+			colour: colour,
+		};
+
+		data.board.push(cellEntry);
+	}
+
+	for (let i = 0; i < topCells.length; i++) {
+		const [rowIndex, colIndex] = getCellLocation(topCells[i]);
+		const colour = getColorOfCell(topCells[i]);
+
+		var cellEntry = {
+			row: rowIndex,
+			col: colIndex,
+			type: 'top',
+			colour: colour,
+		};
+
+		data.board.push(cellEntry);
+	}
+
+	var dataJSON = JSON.stringify(data);
+	console.log(dataJSON);
+};
+
 export default function initGamesController(db) {
 	const create = async (req, res) => {
-		const cardDeck = shuffleCards(makeDeck());
-		const player1Card = cardDeck.pop();
-		const player2Card = cardDeck.pop();
-		let player1Score = 0;
-		let player2Score = 0;
-
-		// determine winner
-		let result;
-
-		if (player1Card.rank > player2Card.rank) {
-			result = 'Player 1 wins!!'; 
-			player1Score += 1;
-		} else if (player1Card.rank < player2Card.rank) {
-			result = 'Player 2 wins!!';
-			player2Score += 1;
-		} else {
-			result = 'Draw';
-		}
+		const boardState = emptyBoard;
 
 		try {
 			// find game in progress or create new game
@@ -28,14 +102,7 @@ export default function initGamesController(db) {
 				defaults: {
 					gameState: {
 						status: 'active',
-						cardDeck,
-						player1Card,
-						player2Card,
-						result,
-						score: {
-							player1: player1Score,
-							player2: player2Score,
-						},
+						boardState
 					},
 				},
 			});
@@ -79,45 +146,20 @@ export default function initGamesController(db) {
 	};
 
 	// gets another 2 cards from the current card deck
-	const deal = async (req, res) => {
+	const move = async (req, res) => {
 		try {
 			const currentGame = await db.Game.findByPk(req.params.id);
 
-			const player1Card = currentGame.gameState.cardDeck.pop();
-			const player2Card = currentGame.gameState.cardDeck.pop();
-
-			let result;
-
-			if (player1Card.rank > player2Card.rank) {
-				result = 'Player 1 wins!!';
-				currentGame.gameState.score.player1 += 1;
-			} else if (player1Card.rank < player2Card.rank) {
-				result = 'Player 2 wins!!';
-				currentGame.gameState.score.player2 += 1;
-			} else {
-				result = 'Draw';
-			}
 
 			const updatedGame = await currentGame.update({
 				gameState: {
 					status: 'active',
-					cardDeck: currentGame.gameState.cardDeck,
-					player1Card,
-					player2Card,
-					result,
-					score: {
-						player1: currentGame.gameState.score.player1,
-						player2: currentGame.gameState.score.player2,
-					},
+					boardState: currentGame.gameState.boardState,
 				},
 			});
 
 			res.send({
 				id: updatedGame.id,
-				player1Card: updatedGame.gameState.player1Card,
-				player2Card: updatedGame.gameState.player2Card,
-				result: updatedGame.gameState.result,
-				score: updatedGame.gameState.score,
 			});
 		} catch (error) {}
 	};
@@ -133,10 +175,7 @@ export default function initGamesController(db) {
 
 			res.send({
 				id: updatedGame.id,
-				player1Card: updatedGame.gameState.player1Card,
-				player2Card: updatedGame.gameState.player2Card,
-				result: updatedGame.gameState.result,
-				score: updatedGame.gameState.score,
+				boardState: currentGame.gameState.boardState
 			});
 		} catch (error) {}
 	};
@@ -157,7 +196,7 @@ export default function initGamesController(db) {
 	return {
 		create,
 		update,
-		deal,
+		move,
 		logout,
 	};
 }

@@ -12,7 +12,7 @@ export default function bindRoutes(app) {
   });
   app.post('/login', UsersController.login);
   app.get('/start', GamesController.create);
-  app.put('/deal/:id', GamesController.deal);
+  app.put('/move/:id', GamesController.move);
   app.post('/refresh', GamesController.update);
   // app.post('/join', GamesController.join);
   app.put('/logout/:id', GamesController.logout); 

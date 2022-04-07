@@ -169,10 +169,10 @@ h1 em {
 .button {
   border: 0;
   cursor: pointer;
-  background: var(--gray-8);
-  color: var(--gray-2);
+  background: rgb(47, 47, 47);
+  color: rgb(164, 161, 161);
   font-weight: 700;
-  padding: var(--size-2) var(--size-4);
+  padding: 20px, 40px;
 }
 
 .button:hover,
