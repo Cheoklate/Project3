@@ -540,22 +540,14 @@ logoutBtn.addEventListener('click', () => {
 		})
 		.catch((error) => console.log(error));
 });
-// create deal and refresh buttons
-const dealBtn = document.createElement('button');
-dealBtn.innerText = 'DEAL';
-
+// create refresh button
 const refreshBtn = document.createElement('button');
 refreshBtn.textContent = 'REFRESH';
 
 // set current game variable
 let currentGame;
 
-// player cards
-const card1 = document.createElement('div');
-card1.classList.add('card');
 
-const card2 = document.createElement('div');
-card2.classList.add('card');
 
 // where results are displayed
 const resultDiv = document.createElement('div');
@@ -582,46 +574,15 @@ startGameBtn.addEventListener('click', () => {
 			console.log('current game', currentGame);
 
 			dealBtn.addEventListener('click', () => {
-				card1.innerHTML = '';
-				card2.innerHTML = '';
-				resultDiv.innerHTML = '';
-
 				axios
-					.put(`./deal/${currentGame.id}`)
+					.put(`./move/${currentGame.id}`)
 					.then((response1) => {
 						console.log(response1);
 						currentGame = response1.data;
-						// change content of scorecard
-						resultDiv.innerHTML = `${response1.data.result}<br>player 1: ${response1.data.score.player1}<br>player 2: ${response1.data.score.player2}`;
-
-						// change content of cards
-						card1.innerHTML = `${response1.data.player1Card.name} of ${response1.data.player1Card.suit}`;
-						card2.innerHTML = `${response1.data.player2Card.name} of ${response1.data.player2Card.suit}`;
 					})
 					.catch((error) => console.log(error));
 			});
-
-			// div that holds player's scores
-			const scoreCardDiv = document.createElement('div');
-			scoreCardDiv.classList.add('scorecard');
-			gameplayContainerDiv.appendChild(scoreCardDiv);
-
-			// displays result of current game
-
-			resultDiv.innerHTML = `${response.data.result}<br>player 1: ${response.data.score.player1}<br>player 2: ${response.data.score.player2}`;
-			scoreCardDiv.appendChild(resultDiv);
-
-			// container that holds both players' cards
-			const playerCardsDiv = document.createElement('div');
-			playerCardsDiv.classList.add('cards-container');
-			gameplayContainerDiv.appendChild(playerCardsDiv);
-
-			// player cards
-			card1.textContent = `${response.data.player1Card.name} of ${response.data.player1Card.suit}`;
-			playerCardsDiv.appendChild(card1);
-
-			card2.textContent = `${response.data.player2Card.name} of ${response.data.player2Card.suit}`;
-			playerCardsDiv.appendChild(card2);
+      
 		})
 		.catch((error) => console.log(error));
 });
@@ -635,16 +596,6 @@ refreshBtn.addEventListener('click', () => {
 		.then((response) => {
 			console.log(response);
 
-			// clear contents of cards
-			card1.innerHTML = '';
-			card2.innerHTML = '';
-			resultDiv.innerHTML = '';
-
-			// change content of scorecard
-			resultDiv.innerHTML = `${response.data.result}<br>player 1: ${response.data.score.player1}<br>player 2: ${response.data.score.player2}`;
-			// change content of cards
-			card1.innerHTML = `${response.data.player1Card.name} of ${response.data.player1Card.suit}`;
-			card2.innerHTML = `${response.data.player2Card.name} of ${response.data.player2Card.suit}`;
 		})
 		.catch((error) => console.log(error));
 });
