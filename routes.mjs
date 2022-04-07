@@ -15,5 +15,5 @@ export default function bindRoutes(app) {
   app.put('/deal/:id', GamesController.deal);
   app.post('/refresh', GamesController.update);
   // app.post('/join', GamesController.join);
-  app.put('/logout/:id', GamesController.logout);
+  app.put('/logout/:id', GamesController.logout); 
 }

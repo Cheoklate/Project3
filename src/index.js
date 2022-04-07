@@ -50,7 +50,6 @@ const getCellLocation = (cell) => {
   const colIndex = colClass[4];
   const rowNumber = parseInt(rowIndex, 10);
   const colNumber = parseInt(colIndex, 10);
-
   return [rowNumber, colNumber];
 };
 
@@ -232,7 +231,6 @@ const handleCellMouseOver = (e) => {
   if (!gameIsLive) return;
   const cell = e.target;
   const [rowIndex, colIndex] = getCellLocation(cell);
-
   const topCell = topCells[colIndex];
   topCell.classList.add(yellowIsNext ? 'yellow' : 'red');
 };
@@ -245,6 +243,7 @@ const handleCellMouseOut = (e) => {
 
 const handleCellClick = (e) => {
   if (!gameIsLive) return;
+  saveJSON()
   const cell = e.target;
   const [rowIndex, colIndex] = getCellLocation(cell);
 
@@ -262,6 +261,44 @@ const handleCellClick = (e) => {
     topCell.classList.add(yellowIsNext ? 'yellow' : 'red');
   }
 };
+
+const saveJSON = () => {
+  var data = {
+      board: []
+  };
+  
+  for (let i = 0; i < allCells.length; i++) {
+      const [rowIndex, colIndex] = getCellLocation(allCells[i]);
+      const colour = getColorOfCell(allCells[i]);
+      
+      var cellEntry = {
+          row: rowIndex,
+          col: colIndex,
+          type: 'all',
+          colour: colour
+      };
+      
+      data.board.push(cellEntry);
+  }
+  
+  for (let i = 0; i < topCells.length; i++) {
+      const [rowIndex, colIndex] = getCellLocation(topCells[i]);
+      const colour = getColorOfCell(topCells[i]);
+      
+      var cellEntry = {
+          row: rowIndex,
+          col: colIndex,
+          type: 'top',
+          colour: colour
+      };
+      
+      data.board.push(cellEntry);
+  }
+  
+  var dataJSON = JSON.stringify(data);
+  console.log(dataJSON)
+
+}
 
 
 
@@ -367,7 +404,6 @@ logoutBtnDiv.appendChild(logoutBtn);
 
 // when the login button is clicked
 loginBtn.addEventListener('click', () => {
-  console.log(`${document.querySelector('#email').value}`);
   axios
     .post('/login', {
       email: document.querySelector('#email').value,
