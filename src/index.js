@@ -290,6 +290,7 @@ resetButton.addEventListener('click', () => {
 
 
 
+
 const topContainerDiv = document.createElement('div');
 topContainerDiv.classList.add('top-container');
 document.body.appendChild(topContainerDiv);
@@ -366,6 +367,7 @@ logoutBtnDiv.appendChild(logoutBtn);
 
 // when the login button is clicked
 loginBtn.addEventListener('click', () => {
+  console.log(`${document.querySelector('#email').value}`);
   axios
     .post('/login', {
       email: document.querySelector('#email').value,
@@ -512,4 +514,16 @@ refreshBtn.addEventListener('click', () => {
       card2.innerHTML = `${response.data.player2Card.name} of ${response.data.player2Card.suit}`;
     })
     .catch((error) => console.log(error));
+});
+
+
+const modal = document.querySelector("#loginModal");
+const openModal = document.querySelector(".open-button");
+const closeModal = document.querySelector(".close-button");
+
+openModal.addEventListener("click", () => {
+  modal.showModal();
+});
+closeModal.addEventListener("click", () => {
+  modal.close();
 });

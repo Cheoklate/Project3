@@ -4,11 +4,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles.scss" />
+    <!-- <link rel="stylesheet" href="styles.scss" /> -->
     <title>Connect 4</title>
   </head>
+  
   <body>
-    <h1>Connect 4</h1>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <h1>Kill me</h1>
+    <div class="" id="modal-container"></div>
   <div class="game-board">
     <div class="cell row-top col-0"></div>
     <div class="cell row-top col-1"></div>
@@ -34,7 +37,7 @@
     <div class="cell row-2 col-0 left-border"></div>
     <div class="cell row-2 col-1"></div>
     <div class="cell row-2 col-2"></div>
-    <div class="cell row-2 col-3"></div>
+    <div class="cell row-2 col-3"></div>  
     <div class="cell row-2 col-4"></div>
     <div class="cell row-2 col-5"></div>
     <div class="cell row-2 col-6 right-border"></div>
@@ -60,7 +63,19 @@
     <div class="cell row-5 col-5 bottom-border"></div>
     <div class="cell row-5 col-6 bottom-border right-border"></div>
   </div>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="index.js"></script>
+  <div class="footer">
+    <button class="reset">Reset</button>
+    <span class="status"></span>
+  </div>
+</p>
+<button class="button open-button">Login</button>
+
+<dialog class="modal" id="loginModal">
+  <h2>Login</h2>
+  <button class="button close-button">close modal</button>
+  <form class="form" method="dialog">
+  </form>
+
+</dialog>
   </body>
 </html>
