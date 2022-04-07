@@ -1,5 +1,7 @@
 import axios from 'axios';
 import './styles.scss';
+// import 'core-js/stable';
+// import 'regenerator-runtime/runtime';
 
 // DOM Elements
 const allCells = document.querySelectorAll('.cell:not(.row-top)');
@@ -346,7 +348,7 @@ const handleCellMouseOut = (e) => {
 
 const handleCellClick = (e) => {
 	if (!gameIsLive) return;
-	saveJSON();
+	// saveJSON();
 	const cell = e.target;
 	const [rowIndex, colIndex] = getCellLocation(cell);
 
@@ -399,7 +401,7 @@ const saveJSON = () => {
 	}
 
 	var dataJSON = JSON.stringify(data);
-	console.log(dataJSON);
+	return data.board;
 };
 
 // Adding Event Listeners
@@ -547,17 +549,35 @@ refreshBtn.textContent = 'REFRESH';
 // set current game variable
 let currentGame;
 
-
-
 // where results are displayed
 const resultDiv = document.createElement('div');
 
+export default function initHackyController(db) {
+	const move = async (req, res) => {
+		const boardState = saveJSON();
+    console.log(boardState)
+		try {
+			const currentGame = await db.Game.findByPk(req.params.id);
+			const updatedGame = await currentGame.update({
+				gameState: {
+					status: 'active',
+					boardState: saveJSON(),
+				},
+			});
+			res.send({
+				id: updatedGame.id,
+			});
+		} catch (error) {}
+	};
+	return {
+		move,
+	};
+}
 // when start button is clicked
 startGameBtn.addEventListener('click', () => {
 	startGameBtn.remove();
 
 	// append deal and refresh buttons to dashboard
-	startGameButtonDiv.appendChild(dealBtn);
 	startGameButtonDiv.appendChild(refreshBtn);
 
 	// display gameplay container
@@ -569,20 +589,21 @@ startGameBtn.addEventListener('click', () => {
 		.get('/start')
 		.then((response) => {
 			console.log(response);
-
 			currentGame = response.data;
 			console.log('current game', currentGame);
-
-			dealBtn.addEventListener('click', () => {
-				axios
-					.put(`./move/${currentGame.id}`)
-					.then((response1) => {
-						console.log(response1);
-						currentGame = response1.data;
-					})
-					.catch((error) => console.log(error));
-			});
-      
+			for (const row of rows) {
+				for (const cell of row) {
+					cell.addEventListener('click', () => {
+            axios
+            .put(`./move/${currentGame.id}`)
+            .then((response1) => {
+              console.log(response1);
+              currentGame = response1.data;
+            })
+            .catch((error) => console.log(error));
+					});
+				}
+			}
 		})
 		.catch((error) => console.log(error));
 });
@@ -595,7 +616,6 @@ refreshBtn.addEventListener('click', () => {
 		})
 		.then((response) => {
 			console.log(response);
-
 		})
 		.catch((error) => console.log(error));
 });

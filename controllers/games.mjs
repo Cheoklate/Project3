@@ -51,6 +51,7 @@ const emptyBoard = {
 		{ row: null, col: 6, type: 'top', colour: null },
 	],
 };
+const boardState = emptyBoard;
 
 const saveJSON = () => {
 	var data = {
@@ -86,12 +87,12 @@ const saveJSON = () => {
 	}
 
 	var dataJSON = JSON.stringify(data);
-	console.log(dataJSON);
+	console.log(data)
+	return data
 };
 
 export default function initGamesController(db) {
 	const create = async (req, res) => {
-		const boardState = emptyBoard;
 
 		try {
 			// find game in progress or create new game
@@ -136,28 +137,22 @@ export default function initGamesController(db) {
 
 			res.send({
 				id: currentGame.id,
-				player1Card: currentGame.gameState.player1Card,
-				player2Card: currentGame.gameState.player2Card,
-				result: currentGame.gameState.result,
-				score: currentGame.gameState.score,
-				status: currentGame.gameState.status,
 			});
 		} catch (error) {}
 	};
 
 	// gets another 2 cards from the current card deck
 	const move = async (req, res) => {
+		// boardState = saveJSON()
 		try {
 			const currentGame = await db.Game.findByPk(req.params.id);
-
-
 			const updatedGame = await currentGame.update({
 				gameState: {
 					status: 'active',
 					boardState: currentGame.gameState.boardState,
 				},
 			});
-
+			console.log('this is the gamestate')
 			res.send({
 				id: updatedGame.id,
 			});
