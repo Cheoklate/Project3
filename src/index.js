@@ -346,7 +346,6 @@ const handleCellMouseOut = (e) => {
 
 const handleCellClick = (e) => {
 	if (!gameIsLive) return;
-	saveJSON();
 	const cell = e.target;
 	const [rowIndex, colIndex] = getCellLocation(cell);
 
@@ -547,8 +546,6 @@ refreshBtn.textContent = 'REFRESH';
 // set current game variable
 let currentGame;
 
-
-
 // where results are displayed
 const resultDiv = document.createElement('div');
 
@@ -557,7 +554,6 @@ startGameBtn.addEventListener('click', () => {
 	startGameBtn.remove();
 
 	// append deal and refresh buttons to dashboard
-	startGameButtonDiv.appendChild(dealBtn);
 	startGameButtonDiv.appendChild(refreshBtn);
 
 	// display gameplay container
@@ -572,17 +568,19 @@ startGameBtn.addEventListener('click', () => {
 
 			currentGame = response.data;
 			console.log('current game', currentGame);
-
-			dealBtn.addEventListener('click', () => {
-				axios
-					.put(`./move/${currentGame.id}`)
-					.then((response1) => {
-						console.log(response1);
-						currentGame = response1.data;
-					})
-					.catch((error) => console.log(error));
-			});
-      
+			for (const row of rows) {
+				for (const cell of row) {
+					cell.addEventListener('click', () => {
+						axios
+							.put(`./move/${currentGame.id}`)
+							.then((response1) => {
+								console.log(response1);
+								currentGame = response1.data;
+							})
+							.catch((error) => console.log(error));
+					});
+				}
+			}
 		})
 		.catch((error) => console.log(error));
 });
@@ -595,7 +593,6 @@ refreshBtn.addEventListener('click', () => {
 		})
 		.then((response) => {
 			console.log(response);
-
 		})
 		.catch((error) => console.log(error));
 });
